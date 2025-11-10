@@ -1,4 +1,63 @@
+// App.jsx
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 function App() {
+  const [tasks, setTasks] = useState([]);
+  const [popupActive, setPopupActive] = useState(false);
+  const [task, setTask] = useState("");
+  const [dueTime, setDueTime] = useState("");
+  const [quote, setQuote] = useState({ text: "asd", author: "asd" });
+  const [selectedTask, setSelectedTask] = useState(null); // Track selected task
+
+  const fetchTasks = async () => {
+    const res = await axios.get("http://localhost:5000/api/todos");
+    setTasks(res.data);
+  };
+
+  const addTask = async () => {
+    if (!task.trim()) return;
+    try {
+      await axios.post("http://localhost:5000/api/todos", {
+        text: task,
+        dueTime: dueTime,
+      });
+      setTask("");
+      setDueTime("");
+      fetchTasks();
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    await axios.delete(`http://localhost:5000/api/todos/${id}`);
+    if (selectedTask && selectedTask._id === id) {
+      setSelectedTask(null);
+    }
+    fetchTasks();
+  };
+
+  const fetchQuote = async () => {
+    const res = await axios.get("http://localhost:5000/api/quotes/random");
+    setQuote(res.data);
+  };
+
+  useEffect(() => {
+    fetchTasks();
+    fetchQuote();
+  }, []);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTask();
+    }
+  };
+
+  const handleTaskClick = (t) => {
+    setSelectedTask(t);
+  };
+
   return (
     <>
       <div className="everything-container">
@@ -9,18 +68,81 @@ function App() {
             </div>
             <div className="listOfTasks">
               <ul>
-                <li>Play Valorant</li>
-                <li>Study</li>
-                <li>Program</li>
-                <li>Code</li>
+                {tasks.map((t) => (
+                  <li
+                    key={t._id}
+                    onClick={() => handleTaskClick(t)}
+                    className={
+                      selectedTask && selectedTask._id === t._id ? "active" : ""
+                    }
+                  >
+                    {t.text}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="quote">
               <h1>
-                {" "}
-                "Start where you are. Use what you have. Do what you can." -
-                moeyaleh
+                "{quote.text}" - {quote.author}
               </h1>
+            </div>
+          </div>
+          <div className="taskInterface">
+            <div className="tasksDetails">
+              {selectedTask ? (
+                <div className="task-detail-content">
+                  <div className="detail-item">
+                    <span className="detail-label">Task:</span>
+                    <p className="detail-value">{selectedTask.text}</p>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Note:</span>
+                    <p className="detail-value">{selectedTask.dueTime}</p>
+                  </div>
+                  <button
+                    className="deleteTaskButton"
+                    onClick={() => deleteTask(selectedTask._id)}
+                  >
+                    X
+                  </button>
+                </div>
+              ) : (
+                <div className="no-task-selected"></div>
+              )}
+            </div>
+            <div className="taskCreation">
+              {popupActive && (
+                <div className="popup">
+                  <input
+                    placeholder="Task Name.."
+                    value={task}
+                    onChange={(e) => setTask(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                  />
+                  <input
+                    placeholder="14:00 PM..."
+                    value={dueTime}
+                    onChange={(e) => setDueTime(e.target.value)}
+                  />
+                  <button
+                    className="confirmAddTask"
+                    onClick={() => {
+                      addTask();
+                      setPopupActive(false);
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+              )}
+              <button
+                className="addButton"
+                onClick={() => {
+                  setPopupActive((p) => !p);
+                }}
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
