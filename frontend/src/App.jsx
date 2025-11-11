@@ -1,4 +1,3 @@
-// App.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -8,7 +7,7 @@ function App() {
   const [task, setTask] = useState("");
   const [dueTime, setDueTime] = useState("");
   const [quote, setQuote] = useState({ text: "asd", author: "asd" });
-  const [selectedTask, setSelectedTask] = useState(null); // Track selected task
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const fetchTasks = async () => {
     const res = await axios.get("http://localhost:5000/api/todos");

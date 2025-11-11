@@ -7,7 +7,7 @@ const todoSchema = new mongoose.Schema({
     unique: true,
   },
   dueTime: {
-    type: String, // e.g., "14:30"
+    type: String,
     required: false,
   },
 });

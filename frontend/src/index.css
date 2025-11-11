@@ -104,9 +104,9 @@ ul li.active {
   margin-top: 520px;
 }
 .addButton {
-  position: fixed;
+  position: absolute;
   bottom: 100px;
-  right: 420px;
+  right: 50px;
   width: 65px;
   height: 65px;
   background-color: cyan;
