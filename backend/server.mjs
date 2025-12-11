@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRoutes from "./routes/authRoutes.mjs";
 import taskRoutes from "./routes/taskRoutes.mjs";
 import quoteRoutes from "./routes/quoteRoutes.mjs";
 
@@ -12,6 +13,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+
 app.use("/api/todos", taskRoutes);
 app.use("/api/quotes", quoteRoutes);
 

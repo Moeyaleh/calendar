@@ -4,11 +4,16 @@ const todoSchema = new mongoose.Schema({
   text: {
     type: String,
     required: true,
-    unique: true,
   },
   dueTime: {
     type: String,
     required: false,
+  },
+  userId: {
+    // Add this field
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
 });
 
