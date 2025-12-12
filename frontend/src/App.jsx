@@ -195,7 +195,7 @@ function App() {
                     onKeyDown={handleKeyPress}
                   />
                   <input
-                    placeholder="14:00 PM..."
+                    placeholder="Note.."
                     value={dueTime}
                     onChange={(e) => setDueTime(e.target.value)}
                   />
